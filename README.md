@@ -25,7 +25,17 @@ The Qualcomm QRB2210 SoC has a bug in the `dwc3-qcom` driver: without a USB-C ca
 
 Arduino has declared this scenario "not supported", but a workaround via `debugfs` exists.
 
-## ✅ The Solution
+> [!IMPORTANT]
+> **Update (November 2025):** Arduino has fixed this bug in newer OS images. Before using this workaround, check if you have the fix:
+> ```bash
+> cat /etc/buildinfo
+> ```
+> - **If file exists:** You have a newer OS - try rebooting first, the fix might already be applied
+> - **If "No such file":** You have an older OS - this workaround is for you!
+> 
+> To update your OS: use [arduino-flasher-cli](https://www.arduino.cc/en/software) (⚠️ this will erase all data)
+
+## ✅ The Solution (for older OS versions)
 
 A systemd service that forces host mode at boot by writing to:
 ```
