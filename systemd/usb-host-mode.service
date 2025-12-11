@@ -1,0 +1,19 @@
+[Unit]
+Description=Force USB-C Host Mode on Arduino UNO Q
+Documentation=https://github.com/Psalmustrack/arduino-uno-q-usb-fix
+After=multi-user.target
+Before=docker.service containerd.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 3
+ExecStart=/bin/sh -c 'echo host > /sys/kernel/debug/usb/4e00000.usb/mode'
+RemainAfterExit=yes
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=usb-host-mode
+
+[Install]
+WantedBy=multi-user.target

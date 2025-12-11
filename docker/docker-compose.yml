@@ -1,0 +1,44 @@
+# Docker Compose per Home Assistant su Arduino UNO Q
+# Richiede: usb-host-mode.service attivo
+# 
+# Uso:
+#   mkdir -p ~/homeassistant/config
+#   cp docker-compose.yml ~/homeassistant/
+#   cd ~/homeassistant
+#   sudo docker compose up -d
+#
+# Accesso: http://<IP_ARDUINO>:8123
+
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    restart: unless-stopped
+    
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/udev:/run/udev:ro
+    
+    # Dispositivo USB (dongle Zigbee)
+    # Modifica il path se usi un dongle diverso
+    # Trova il tuo con: ls -la /dev/serial/by-id/
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    
+    # Alternativa: path persistente (consigliato)
+    # devices:
+    #   - /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_XXXXXX-if00-port0:/dev/ttyUSB0
+    
+    network_mode: host
+    
+    environment:
+      - TZ=Europe/Rome
+    
+    # Healthcheck opzionale
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
